@@ -2,36 +2,13 @@
 
 require 'vendor/autoload.php';
 
+$app = new App(true);
 
-$app = new \atk4\ui\App('Welcome to Agile Toolkit');
-$app->initLayout('Admin');
+//Ensure users are authenticated before accessing the admin section
+//$app->add(new \atk4\login\Auth())
+//  ->setModel(new \atk4\login\Model\User($app->db));
 
-
-/****************************************************************
- * You can now remove the text below and write your own Web App *
- *                                                              *
- * Thank you for trying out Agile Toolkit                       *
- ****************************************************************/
-
-// Default installation gives warning, so update php.ini the remove this line
-date_default_timezone_set('UTC');
-
-$app->layout->leftMenu->addItem(['Front-end demo', 'icon'=>'puzzle'], ['index']);
-$app->layout->leftMenu->addItem(['Admin demo', 'icon'=>'dashboard'], ['admin']);
-
-class TestClient extends \atk4\data\Model {
-    function init() {
-        parent::init();
-
-        $this->addField('full_name');
-        $this->addField('company');
-        $this->addField('added', ['type'=>'date']);
-        $this->addField('balance', ['type'=>'money']);
-    }
-}
-
-session_start();
-$db = new \atk4\data\Persistence_Array($_SESSION);
-
-$app->add(['CRUD', 'paginator'=>false])->setModel(new TestClient($db, 'test-client'));
-
+$app->add('CRUD')->setModel(new Model\User($app->db));
+$app->add('CRUD')->setModel(new Model\Friend($app->db));
+$app->add('CRUD')->setModel(new Model\Loan($app->db));
+$app->add('CRUD')->setModel(new Model\Repayment($app->db));
